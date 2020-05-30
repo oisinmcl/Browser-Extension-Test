@@ -1,4 +1,5 @@
 let changeColor = document.getElementById('changeColor');
+var bkg = chrome.extension.getBackgroundPage();
 
 chrome.storage.sync.get('color', function(data) {
   changeColor.style.backgroundColor = data.color;
@@ -6,6 +7,7 @@ chrome.storage.sync.get('color', function(data) {
 });
 
 changeColor.onclick = function(element) {
+
     chrome.storage.sync.get('color', function(data) {
     let color = data.color;
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -13,6 +15,7 @@ changeColor.onclick = function(element) {
           tabs[0].id,
           {code: 'document.body.style.background = "' + color + '";'});
     });
+    bkg.console.log('Background colour changed to: ' + color);
   });
 };
   
@@ -24,7 +27,7 @@ function constructOptions(kButtonColors) {
     button.style.backgroundColor = item;
     button.addEventListener('click', function() {
       chrome.storage.sync.set({color: item}, function() {
-        console.log('color is ' + item);
+        bkg.console.log('Selected color changed to: ' + item);
       })
       changeColor.style.backgroundColor = item;
     });
